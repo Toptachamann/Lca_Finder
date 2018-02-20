@@ -3,8 +3,8 @@
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
-    <bean id="lcaFinder" class="com.timofey.chudakov.LcaFinderImpl"/>
-    <bean id="graphReader" class="com.timofey.chudakov.GraphReaderImpl"/>
+    <bean id="lcaFinder" class="jgrapht.LcaFinderImpl"/>
+    <bean id="graphReader" class="jgrapht.GraphReaderImpl"/>
     <bean id="solver" class="Solver">
         <constructor-arg name="reader" ref="graphReader"/>
         <constructor-arg name="finder" ref="lcaFinder"/>
