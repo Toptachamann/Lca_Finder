@@ -1,0 +1,7 @@
+digraph {
+Father; Mother; Sister; Brother;
+Father -> Brother;
+Father -> Sister;
+Mother -> Brother;
+Mother -> Sister;
+}

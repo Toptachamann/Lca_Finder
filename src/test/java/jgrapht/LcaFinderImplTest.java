@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class LcaFinderImplTest {
@@ -32,7 +33,7 @@ public class LcaFinderImplTest {
     Set<String> lcas = finder.findLcas(graph, "Sister", "Brother");
     assertTrue("Lcas should contain vertex 'Mother'", lcas.contains("Mother"));
     assertTrue("Lcas should contain vertex 'Father'", lcas.contains("Father"));
-    assertTrue("Size of lcas should be equal to 2", lcas.size() == 2);
+    assertEquals("Size of lcas should be equal to 2", 2, lcas.size());
   }
 
   @Test
@@ -67,8 +68,11 @@ public class LcaFinderImplTest {
     Set<String> lcas1 = finder.findLcas(graph, "3", "4");
     Set<String> lcas2 = finder.findLcas(graph, "7", "8");
     Set<String> lcas3 = finder.findLcas(graph, "9", "8");
+    assertEquals(1, lcas1.size());
+    assertEquals(2, lcas2.size());
+    assertEquals(2, lcas3.size());
     assertTrue("Should contain [1]", lcas1.containsAll(Collections.singletonList("1")));
     assertTrue("Should contain [2, 11]", lcas2.containsAll(Arrays.asList("2", "11")));
-    assertTrue("Should contain [2]", lcas3.containsAll(Collections.singletonList("2")));
+    assertTrue("Should contain [2]", lcas3.containsAll(Arrays.asList("2", "11")));
   }
 }
