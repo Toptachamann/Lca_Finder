@@ -9,11 +9,13 @@
         <module name="jgrapht_warmup" />
         <module name="Lca_" />
         <module name="Lca_Finder" />
+        <module name="Lca_finder" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
       <module name="jgrapht_warmup" target="1.8" />
       <module name="Lca_" target="1.8" />
+      <module name="Lca_finder" target="1.8" />
       <module name="Lca_Finder" target="1.8" />
     </bytecodeTargetLevel>
   </component>
