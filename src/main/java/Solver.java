@@ -20,14 +20,27 @@ import java.util.stream.Collectors;
 
 public class Solver {
 
+  /** object for reading graph from file */
   private GraphReader reader;
+
+  /** object for finding lowest common ancestors */
   private LcaFinder finder;
 
+  /**
+   * initializes <code>reader</code> and <code>finder</code>
+   *
+   * <p><b>Note:</b> used for Spring dependency injection
+   */
   public Solver(GraphReader reader, LcaFinder finder) {
     this.reader = reader;
     this.finder = finder;
   }
 
+  /**
+   * Application entry point
+   *
+   * <p>Defines the command line interface of the application and retrieves specified parameters
+   */
   public static void main(String[] args) {
     ApplicationContext context = new ClassPathXmlApplicationContext("/META-INF/beans.xml");
     Solver solver = context.getBean(Solver.class);
@@ -70,10 +83,14 @@ public class Solver {
           "Computes the lowest common ancestors of the specified people"
               + " in the graph, stored in the specified file\n\n",
           options,
-          "\nEnd of the usage");
+          "");
     }
   }
 
+  /**
+   * Reads the graph from the file defines by the specified path, finds lowest common ancestors of
+   * <code>a</code> and <code>b</code>, and outputs them to the standard output
+   */
   public void handleInput(String path, String a, String b) {
     File file = new File(path);
     if (!file.exists() || !file.isFile() || !file.canRead()) {
@@ -81,9 +98,15 @@ public class Solver {
     } else {
       try {
         Graph<String, DefaultEdge> graph = reader.readGraph(file);
-        if (!graph.containsVertex(a) || !graph.containsVertex(b)) {
-          System.out.println("Graph doesn't contain one or both specified vertices");
-        } else {
+        if (!graph.containsVertex(a)) {
+          System.out.println(
+              String.format("Graph from file %s doesn't contain vertex %s", path, a));
+        } else if (!graph.containsVertex(b)) {
+          System.out.println(
+              String.format("Graph from file %s doesn't contain vertex %s", path, b));
+        } else if(a.equals(b)) {
+          System.out.println("You specified identical vertices");
+        }else {
           Set<String> lcas = finder.findLcas(graph, a, b);
           if (lcas.size() == 0) {
             System.out.println(String.format("No ancestors found for %s and %s in common", a, b));

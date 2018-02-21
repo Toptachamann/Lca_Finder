@@ -7,10 +7,14 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="jgrapht_warmup" />
+        <module name="Lca_" />
+        <module name="Lca_Finder" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
       <module name="jgrapht_warmup" target="1.8" />
+      <module name="Lca_" target="1.8" />
+      <module name="Lca_Finder" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
