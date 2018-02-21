@@ -5,7 +5,7 @@ Lca Finder is a basic command-line application for reading graphs from *.dot or 
 You should have JRE or JDK version 1.8 or later installed on your local mashine
 
 ### Installation
-Download [this](Lca_Finder-1.0.jar) jar file and your are done!
+Download [this](Lca_Finder-1.0.jar) jar file (button download in the upper right corner) and your are done!
 
 ### Usage
 
