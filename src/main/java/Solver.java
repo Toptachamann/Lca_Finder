@@ -13,7 +13,7 @@ import org.jgrapht.io.ImportException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -41,62 +41,68 @@ public class Solver {
             .desc("path to file with graph")
             .build();
     Option aOption =
-        Option.builder("a")
-            .longOpt("person-1")
-            .argName("name")
+        Option.builder("p")
+            .longOpt("people")
+            .numberOfArgs(2)
+            .argName("person, person")
             .required()
-            .hasArg()
-            .desc("name of the first person")
+            .desc("name of the two people")
             .build();
-    Option bOption =
-        Option.builder("b")
-            .longOpt("person-2")
-            .argName("name")
-            .required()
-            .hasArg()
-            .desc("name of the second person")
-            .build();
-
     Options options = new Options();
-    options.addOption(file).addOption(aOption).addOption(bOption);
+    options.addOption(file).addOption(aOption);
 
     CommandLineParser parser = new DefaultParser();
     try {
       CommandLine commandLine = parser.parse(options, args);
       String path = commandLine.getOptionValue('f');
-      String a = commandLine.getOptionValue('a');
-      String b = commandLine.getOptionValue('b');
-      Set<String> lcas = solver.getLcas(path, a, b);
-      if (lcas.size() == 0) {
-        System.out.println(String.format("No ancestors found for %s and %s in common", a, b));
+      String[] p = commandLine.getOptionValues('p');
+      if (p.length >= 2) {
+        solver.handleInput(path, p[0], p[1]);
       } else {
-        System.out.print(
-            String.format(
-                "Lowest common " + (lcas.size() == 1 ? "ancestor" : "ancestors") + " of %s and %s: ",
-                a,
-                b));
-        System.out.println(lcas.stream().collect(Collectors.joining(", ")));
+        // Shouldn't happen due to command line option's format
+        System.out.println("You have to specify two valid people");
       }
     } catch (ParseException e) {
       HelpFormatter helpFormatter = new HelpFormatter();
       helpFormatter.printHelp(
           100,
-          "java -jar jgrapht_warmup-1.0-SNAPSHOT.jar -a [PERSON_A] -b [PERSON_B] -f [FILE]\n\n",
-          "Computes the lowest common ancestors of the specified people a "
-              + "and b in the graph, stored in the specified file\n\n",
+          "java -jar jgrapht_warmup-1.0-SNAPSHOT.jar -f [FILE] -p [PERSON_1, PERSON_2]\n\n",
+          "Computes the lowest common ancestors of the specified people"
+              + " in the graph, stored in the specified file\n\n",
           options,
           "\nEnd of the usage");
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    } catch (ImportException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
     }
   }
 
-  public Set<String> getLcas(String path, String a, String b) throws IOException, ImportException {
-    Graph<String, DefaultEdge> graph = reader.readGraph(path);
-    return finder.findLcas(graph, a, b);
+  public void handleInput(String path, String a, String b) {
+    File file = new File(path);
+    if (!file.exists() || !file.isFile() || !file.canRead()) {
+      System.out.println("Specified file should be an existing readable file");
+    } else {
+      try {
+        Graph<String, DefaultEdge> graph = reader.readGraph(file);
+        if (!graph.containsVertex(a) || !graph.containsVertex(b)) {
+          System.out.println("Graph doesn't contain one or both specified vertices");
+        } else {
+          Set<String> lcas = finder.findLcas(graph, a, b);
+          if (lcas.size() == 0) {
+            System.out.println(String.format("No ancestors found for %s and %s in common", a, b));
+          } else {
+            System.out.print(
+                String.format(
+                    "Lowest common "
+                        + (lcas.size() == 1 ? "ancestor" : "ancestors")
+                        + " of %s and %s: ",
+                    a,
+                    b));
+            System.out.println(lcas.stream().collect(Collectors.joining(", ")));
+          }
+        }
+      } catch (IOException e) {
+        System.out.println("An IOException occurred: " + e.getMessage());
+      } catch (ImportException e) {
+        System.out.println("An import exception occurred: " + e.getMessage());
+      }
+    }
   }
 }
